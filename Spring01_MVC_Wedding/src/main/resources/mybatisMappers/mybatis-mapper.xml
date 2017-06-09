@@ -1,0 +1,548 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="logMapper">
+  
+  	<insert id="insertOne" parameterType="log">
+  		insert into t_wedding_log values(t_wedding_log_seq.nextval, #{email}, #{pw}
+  										, null, null, null, null, null, null, null, null)
+  	</insert>
+  	
+  	<select id="selectOne" parameterType="log" resultType="log">
+  		select * from t_wedding_log where email=#{email} and pw=#{pw}
+  	</select>
+  	
+  	<update id="update" parameterType="log">
+  		update t_wedding_log set name=#{name}, cName=#{cName}, address=#{address},
+  							pNum=#{pNum}, weddingDay=#{weddingDay}, pName=#{pName}, 
+  							sysName=#{sysName}, orgName=#{orgName} where num=#{num} 
+  	</update>
+  	
+  	<select id="selectCouple" parameterType="log" resultType="log">
+  		select * from t_wedding_log where (name=#{cName} and weddingDay=#{weddingDay}) or
+  										(pname=#{cName} and weddingDay=#{weddingDay})
+  	</select>
+  	
+  	<select id="selectMyInfo" parameterType="log" resultType="log">
+		select * from t_wedding_log where num=#{num}	
+  	</select>
+  	
+  	<select id="idCheck" parameterType="log" resultType="log">
+  		select email from t_wedding_log where email=#{eValue}
+  	</select>
+  	
+  	<select id="findEmail" resultType="String">
+  		select email from t_wedding_log where name=#{name} and pNum=#{pNum}
+  	</select>
+  	
+  	<select id="findPw" resultType="String">
+  		select pw from t_wedding_log where name=#{name} and email=#{email}
+  	</select>
+  	
+  	<insert id="insertFAQMessage" parameterType="FAQDto">
+  		insert into t_wedding_FAQ values(t_wedding_FAQ_seq.nextval, #{name}, #{email}, #{pNum}, #{message})
+  	</insert>
+  	
+  	<select id="selectFAQ" resultType="FAQDto">
+  		select * from t_wedding_FAQ order by num desc
+  	</select>
+  	
+  	<select id="selectOneForFriend" parameterType="Integer" resultType="log">
+  		select * from t_wedding_log where num=#{num}
+  	</select>
+  	
+  	<!-- gift////////////////////////////////////////////////////////// -->
+      <select id="giftSelectList"  resultType="gDto">
+         select * from t_wedding_gift where type=#{type} order by num
+      </select>
+      
+      <select id="giftSelectOne" resultType="gDto">
+         select * from t_wedding_gift where num=#{num}
+      </select>
+      
+      <select id="giftSelectListP01" resultType="gDto">
+         select * from t_wedding_gift where type=#{type} order by price
+      </select>
+   
+      <select id="giftSelectListP02" resultType="gDto">
+         select * from t_wedding_gift where type=#{type} order by price desc
+      </select>
+   
+      <select id="giftSelectListN01" resultType="gDto">
+         select * from t_wedding_gift where type=#{type} order by name
+      </select>
+   
+      <select id="giftSelectListN02" resultType="gDto">
+         select * from t_wedding_gift where type=#{type} order by name desc
+      </select>
+      
+      <select id="gift_Search" resultType="gDto" parameterType="gDto">
+         select * from t_wedding_gift where type=#{type} and name like '%${search}%'
+      </select>
+      
+      <insert id="insert_giftCart" parameterType="gcDto">
+         insert into t_wedding_gift_cart values(t_wedding_gift_cart_seq.nextval,#{name}
+                                       ,#{email},#{type},#{price},#{buyquantity},#{total},#{paycheck})
+      </insert>
+      
+      <update id="update_giftCart01" parameterType="gDto">
+         update t_wedding_gift set quantity=#{quantity} where num=#{num}
+      </update>
+      
+      <select id="selectListCart" resultType="gcDto">
+         select * from t_wedding_gift_cart where email=#{email} order by num desc
+      </select>
+      
+      <delete id="delete_giftCart">
+         delete from t_wedding_gift_cart where num=#{num}
+      </delete>
+      
+      <select id="selectOnegiftCart" resultType="gcDto">
+         select * from t_wedding_gift_cart where num=#{num}
+      </select>
+      
+      <insert id="insert_sale" parameterType="sDto">
+         insert into t_wedding_sale values(t_wedding_sale_seq.nextval, #{name},#{payment},
+                                 #{quantity}, #{email}, #{category})
+      </insert>
+      
+      <select id="GiftselectListcnt" resultType="Integer">
+         select count(*) as cnt from t_wedding_gift
+      </select>
+      
+      <select id="GiftSelectPageView" parameterType="pageDto" resultType="gDto">
+         <![CDATA[ select * from (select rownum rnum, tt.*from 
+              (select * from t_wedding_gift order by num ) tt)
+              where rnum>=#{startNum} and rnum<=#{endNum}]]>
+      </select>
+      
+      <update id="updateGift_Cart" parameterType="gcDto">
+         update t_wedding_gift_cart set paycheck=#{paycheck} where num=#{num}
+      </update>
+      
+      <update id="updateGift_System01" parameterType="gDto">
+         update t_wedding_gift set name=#{name}, price=#{price}, content=#{content}, quantity=#{quantity},
+                            type=#{type} where num=#{num}
+      </update>
+      
+      <update id="updateGift_System02" parameterType="gDto">
+         update t_wedding_gift set name=#{name}, price=#{price}, content=#{content}, sysname=#{sysname},
+                           orgname=#{orgname}, quantity=#{quantity}, type=#{type} where num=#{num}
+      </update>
+      
+      <select id="gift_Search02" resultType="gDto" parameterType="gDto">
+         select * from t_wedding_gift where name like '%${search}%'
+      </select>
+     
+     <!-- vender_dress///////////////////////////////////////////////////////// -->
+       <select id="venderSelectList01" resultType="vdDto">
+           select * from t_wedding_vender_dress where type=#{type} order by num
+       </select>
+       
+       <select id="venderSelectOne" resultType="vdDto">
+           select * from t_wedding_vender_dress where num=#{num}
+       </select>
+       
+       <select id="venderSelectList02" resultType="vdDto">
+         select * from t_wedding_vender_dress where type=#{type} order by name
+      </select>
+      
+      <select id="venderSelectList03" resultType="vdDto">
+         select * from t_wedding_vender_dress where type=#{type} order by price
+      </select>
+      
+      <select id="VenderDselectListcnt" resultType="Integer">
+         select count(*) as cnt from t_wedding_vender_dress 
+      </select>
+      
+      <select id="VenderDSelectPageView" parameterType="pageDto" resultType="vdDto">
+         <![CDATA[ select * from (select rownum rnum, tt.*from 
+              (select * from t_wedding_vender_dress order by num ) tt)
+              where rnum>=#{startNum} and rnum<=#{endNum}]]>
+      </select>
+      
+      <update id="updateDress_System01" parameterType="vdDto">
+         update t_wedding_vender_dress set name=#{name}, price=#{price}, content=#{content}, homeurl=#{homeurl},
+                           type=#{type}, address=#{address}, phone=#{phone}, bname=#{bname} where num=#{num}
+      </update>
+      
+      <update id="updateDress_System02" parameterType="vdDto">
+         update t_wedding_vender_dress set name=#{name}, price=#{price}, content=#{content}, homeurl=#{homeurl},
+                                 type=#{type}, address=#{address}, phone=#{phone}, bname=#{bname},
+                                 orgname=#{orgname}, sysname=#{sysname} where num=#{num}
+      </update>
+      
+      <!-- vender_florists////////////////////////////////////////////////////// -->
+       <select id="selectList_florists01" resultType="vfDto">
+           select * from t_wedding_vender_florists where type=#{type} order by num
+        </select>
+  
+        <select id="selectOne_bouqeut01" resultType="vfDto">
+           select * from t_wedding_vender_florists where num=#{num}
+        </select>
+        
+        <select id="selectList_florists02" resultType="vfDto">
+         select * from t_wedding_vender_florists where type=#{type} order by name
+      </select>
+   
+      <select id="selectList_florists03" resultType="vfDto">
+         select * from t_wedding_vender_florists where type=#{type} order by price
+      </select>
+      
+      <select id="VenderFselectListcnt" resultType="Integer">
+         select count(*) as cnt from t_wedding_vender_florists
+      </select>
+      
+      <select id="VenderFSelectPageView" parameterType="pageDto" resultType="vfDto">
+         <![CDATA[ select * from (select rownum rnum, tt.*from 
+              (select * from t_wedding_vender_florists order by num ) tt)
+              where rnum>=#{startNum} and rnum<=#{endNum}]]>
+      </select>
+      
+      <update id="updateFlorists_System01" parameterType="vfDto">
+         update t_wedding_vender_florists set name=#{name}, price=#{price}, homeurl=#{homeurl},
+                           type=#{type}, address=#{address}, phone=#{phone}, bname=#{bname} where num=#{num}
+      </update>
+      
+      <update id="updateFlorists_System02" parameterType="vfDto">
+         update t_wedding_vender_florists set name=#{name}, price=#{price}, homeurl=#{homeurl},
+                                 type=#{type}, address=#{address}, phone=#{phone}, bname=#{bname},
+                                 orgname=#{orgname}, sysname=#{sysname} where num=#{num}
+      </update>
+      
+      <!-- vender_makeup//////////////////////////////////////////////////////// -->
+       <select id="makeupSelectList01" resultType="vmDto">
+         select * from t_wedding_vender_makeup order by num
+      </select>
+   
+      <select id="makeupSelectList02" resultType="vmDto">
+         select * from t_wedding_vender_makeup order by name
+      </select>
+   
+      <select id="makeupSelectList03" resultType="vmDto">
+         select * from t_wedding_vender_makeup order by judge desc
+      </select>
+      
+      <select id="makeupSelectOne" resultType="vmDto">
+         select * from t_wedding_vender_makeup where num=#{num}
+      </select>
+      
+      <select id="VenderMSelectListcnt" resultType="Integer">
+         select count(*) as cnt from t_wedding_vender_makeup
+      </select>
+      
+      <select id="VenderMSelectPageView" parameterType="pageDto" resultType="vsDto">
+         <![CDATA[ select * from (select rownum rnum, tt.*from 
+              (select * from t_wedding_vender_makeup order by num ) tt)
+              where rnum>=#{startNum} and rnum<=#{endNum}]]>
+      </select>
+      
+      <update id="updateMakeup_System01" parameterType="vsDto">
+         update t_wedding_vender_makeup set name=#{name}, homeurl=#{homeurl}, content=#{content}
+                              , address=#{address}, phone=#{phone}, judge=#{judge} where num=#{num}
+      </update>
+      
+      <update id="updateMakeup_System02" parameterType="vsDto">
+         update t_wedding_vender_makeup set name=#{name}, homeurl=#{homeurl}, content=#{content},
+                                    address=#{address}, phone=#{phone}, judge=#{judge}, logo=#{logo},
+                                    image01=#{image01}, image02=#{image02}, image03=#{image03},
+                                    image04=#{image04} where num=#{num}
+      </update>
+     
+     <!-- vender_studio//////////////////////////////////////////////////////// -->
+        <select id="studioSelectList01" resultType="vsDto">
+         select * from t_wedding_vender_studio order by num
+      </select>
+   
+      <select id="studioSelectOne" resultType="vsDto">
+         select * from t_wedding_vender_studio where num=#{num}
+      </select>
+   
+      <select id="studioSelectList02" resultType="vsDto">
+         select * from t_wedding_vender_studio order by name
+      </select>
+   
+      <select id="studioSelectList03" resultType="vsDto">
+         select * from t_wedding_vender_studio order by judge desc
+      </select>
+      
+      <insert id="insert_venderCart01" parameterType="vcDto">
+         insert into t_wedding_vender_cart values(t_wedding_vender_cart_seq.nextval,#{name},#{email}
+                                       ,#{judge},#{address},#{phone},#{homeurl},#{logo},#{type},null)
+      </insert>
+   
+      <insert id="insert_venderCart02" parameterType="vcDto">
+         insert into t_wedding_vender_cart values(t_wedding_vender_cart_seq.nextval,#{name},#{email}
+                                       ,null,#{address},#{phone},#{homeurl},#{logo},#{type},#{pname})
+      </insert>
+      
+      <select id="selectList_venderCart" resultType="vcDto">
+         select * from t_wedding_vender_cart where email=#{email} order by num
+      </select>
+      
+      <delete id="delete_venderCart">
+         delete from t_wedding_vender_cart where num=#{num}
+      </delete>
+      
+      <select id="VenderSSelectListcnt" resultType="Integer">
+         select count(*) as cnt from t_wedding_vender_studio 
+      </select>
+      
+      <select id="VenderSSelectPageView" parameterType="pageDto" resultType="vsDto">
+         <![CDATA[ select * from (select rownum rnum, tt.*from 
+              (select * from t_wedding_vender_studio order by num ) tt)
+              where rnum>=#{startNum} and rnum<=#{endNum}]]>
+      </select>
+      
+      <update id="updateStudio_System01" parameterType="vsDto">
+         update t_wedding_vender_studio set name=#{name}, homeurl=#{homeurl}, content=#{content}
+                              , address=#{address}, phone=#{phone}, judge=#{judge} where num=#{num}
+      </update>
+      
+      <update id="updateStudio_System02" parameterType="vsDto">
+         update t_wedding_vender_studio set name=#{name}, homeurl=#{homeurl}, content=#{content},
+                                    address=#{address}, phone=#{phone}, judge=#{judge}, logo=#{logo},
+                                    image01=#{image01}, image02=#{image02}, image03=#{image03},
+                                    image04=#{image04} where num=#{num}
+      </update>
+     
+     
+     
+     
+     
+     <!-- 레지스트리 상품 쿼리 -->
+     
+     <insert id="regInsertOneProduct" parameterType="regProduct">
+        insert into t_wedding_registryProduct 
+        values(t_wedding_registryProduct_seq.nextval, #{name}, #{price}, #{content}, #{orgname}, #{sysname}, #{quantity}, #{category})
+     </insert>
+     
+     <delete id="regDeleteOneProduct" parameterType="Integer">
+     	delete t_wedding_registryProduct where num=#{num}
+     </delete>
+     
+     <select id="regSelectListProductCnt" resultType="Integer">
+        select count(*) as cnt from t_wedding_registryProduct
+     </select>
+     
+     <select id="regProductPageView" parameterType="pageDto" resultType="regProduct">
+     	<![CDATA[ select * from (select rownum rnum, tt.*from 
+              (select * from t_wedding_registryProduct order by num ) tt)
+              where rnum>=#{startNum} and rnum<=#{endNum}]]>
+     </select>
+     
+     <select id="regSelectProductByCategory" resultType="regProduct">
+        select * from t_wedding_registryProduct where category=#{category} order by price
+     </select>
+     
+     <select id="regProductOrderByPriceASC" resultType="regProduct">
+     	select * from t_wedding_registryProduct where category=#{category} order by price
+     </select>
+     
+     <select id="regProductOrderByPriceDESC" resultType="regProduct">
+     	select * from t_wedding_registryProduct where category=#{category} order by price DESC
+     </select>
+     
+     <select id="regProductOrderByNameASC" resultType="regProduct">
+     	select * from t_wedding_registryProduct where category=#{category} order by name
+     </select>
+     
+     <select id="regProductOrderByNameDESC" resultType="regProduct">
+     	select * from t_wedding_registryProduct where category=#{category} order by name DESC
+     </select>
+     
+     <select id="regProductSearch" parameterType="regProduct" resultType="regProduct">
+     	select * from t_wedding_registryProduct where category=#{category} and name like '%${search}%'
+     </select>
+     
+     <select id="regProductSearchManager" parameterType="regProduct" resultType="regProduct">
+     	select * from t_wedding_registryProduct where name like '%${search}%'
+     </select>
+     
+     <insert id="regInsertOneCart" parameterType="regCart">
+     	insert into t_wedding_registryCart 
+     	values(t_wedding_registryCart_seq.nextval, #{name}
+        			,#{email},#{category},#{price},#{buyquantity},#{total},#{paycheck})
+     </insert>
+     
+     <select id="regSelectListCart" parameterType="String" resultType="regCart">
+     	select * from t_wedding_registryCart where email=#{email} order by num desc
+     </select>
+     
+     <select id="regSelectListCartCnt" parameterType="String" resultType="Integer">
+     	select count(*) as cnt from t_wedding_registryCart where email=#{email}
+     </select>
+     
+     <delete id="regDeleteCart" parameterType="Integer">
+     	delete from t_wedding_registryCart where num=#{num}
+     </delete>
+     
+     <select id="regSelectOneCart" parameterType="Integer" resultType="regCart">
+     	select * from t_wedding_registryCart where num=#{num}
+     </select>
+     
+     <update id="regUpdateQuantity" parameterType="regProduct">
+     	update t_wedding_registryProduct set quantity=#{quantity} where num=#{num}
+     </update>
+     
+     <insert id="regInsertSale" parameterType="sDTO">
+     	insert into t_wedding_sale 
+     	values(t_wedding_sale_seq.nextval, #{name}, #{payment}, #{quantity}, #{email}, #{category})
+     </insert>
+     
+     <update id="regUpdateCart" parameterType="regCart">
+     	update t_wedding_registryCart 
+     	set paycheck=#{paycheck} where num=#{num}
+     </update>
+     
+     <update id="regUpdateProduct" parameterType="regProduct">
+     	update t_wedding_registryProduct 
+     	set name=#{name}, price=#{price}, content=#{content}, quantity=#{quantity}, category=#{category} where num=#{num}
+     </update>
+     
+     <update id="regUpdateProductWithPhoto" parameterType="regProduct">
+     	update t_wedding_registryProduct 
+     	set name=#{name}, price=#{price}, content=#{content}, sysname=#{sysname}, orgname=#{orgname}, quantity=#{quantity}, category=#{category} where num=#{num}
+     </update>
+     
+     <select id="regSelectOneProduct" parameterType="Integer" resultType="regProduct">
+     	select * from t_wedding_registryProduct where num=#{num}
+     </select>
+     
+     <!-- savePoint -->
+     
+     <insert id="insertSavedPoint" parameterType="savedPoint">
+     	insert into t_wedding_savedPoint 
+     	values(t_wedding_savedPoint_seq.nextval,#{email},#{point})
+     </insert>
+     
+     <update id="updateSavePoint" parameterType="savedPoint">
+     	update t_wedding_savedPoint 
+     	set point=#{point} where email=#{email}
+     </update>
+     
+     <select id="selectOneSavedPoint" parameterType="String" resultType="savedPoint">
+     	select * from t_wedding_savedPoint where email=#{email}
+     </select>
+     
+     <!-- friendPaid -->
+     <insert id="insertFriendPaid" parameterType="friendPaid">
+     	insert into t_wedding_friendPaid 
+     	values(t_wedding_friendPaid_seq.nextval, #{email}, #{name}, #{payment})
+     </insert>
+     
+     <select id="selectListFriendPaid" parameterType="String" resultType="friendPaid">
+     	select * from t_wedding_friendPaid where email=#{email}
+     </select>
+     
+  	 <!-- 레지스트리 친구 쿼리 -->
+     
+     <insert id="regInsertOneFriend" parameterType="regFriends">
+        insert into t_wedding_registryFriends
+        values(t_wedding_registryFriends_seq.nextval, #{email}, #{fName}, #{fEmail}, #{fPhone})
+     </insert>
+     
+     <select id="regSelectAllFriends" resultType="regFriends">
+        select * from t_wedding_registryFriends where email=#{email} order by fName
+     </select>
+     
+     <select id="regSelectOneFriend" parameterType="Integer" resultType="regFriends">
+     	select * from t_wedding_registryFriends where num=#{num}
+     </select>
+     
+     <update id="regUpdateOneFriend" parameterType="regFriends">
+        update t_wedding_registryFriends 
+        set fName=#{fName}, fEmail=#{fEmail}, fPhone=#{fPhone} where num=#{num}
+     </update>
+     
+     <delete id="regDeleteOneFriend" parameterType="Integer">
+        delete t_wedding_registryFriends where num=#{num}
+     </delete>
+     
+  	
+  	<!-- 게시판 -->
+  	<select id="QandAPageCnt" resultType="Integer">
+       select count(*) as cnt from t_wedding_QandA
+    </select>
+  	
+  	<select id="QandASelectPageView" parameterType="pageDto" resultType="QandADto">
+  		<![CDATA[ select * from (select rownum rnum, tt.*from 
+  		(select * from t_wedding_QandA order by groupNum desc, replySeq asc) tt)
+  		where rnum>=#{startNum} and rnum<=#{endNum}]]>
+  	</select>
+	
+	<insert id="QandAInsertOne" parameterType="QandADto">
+		insert into t_wedding_QandA
+		values(t_wedding_QandA_seq.nextval, 0, 0, 0, 1, #{title}, #{writer}, #{contents}, sysdate)
+	</insert> 
+	
+	<update id="QandAGroupNumUpdate" parameterType="QandADto">
+		update t_wedding_QandA set groupNum=num where groupNum=0
+	</update> 	
+	
+	<select id="QandASelectOne" parameterType="Integer" resultType="QandADto">
+		select * from t_wedding_QandA where num=#{num}
+	</select>
+	
+	<update id="QandAReplySeqUpdate" parameterType="Integer">
+		update t_wedding_QandA set replySeq=replySeq+1 where groupNum=#{groupNum} and replySeq>0
+	</update>
+	
+	<insert id="QandAInsertReply" parameterType="QandADto">
+		insert into t_wedding_QandA values
+		(t_wedding_QandA_seq.nextval, #{groupNum}, 1, 1, 1, #{title}, #{writer}, #{contents}, sysdate)
+	</insert>
+	
+	<select id="findCoupleRowCnt" resultType="Integer">
+		select count(*) as cnt from t_wedding_registryCart where email=#{email}
+	</select>
+	
+	<select id="MasterLogPageCnt" resultType="Integer">
+  		select count(*) as cnt from t_wedding_log
+  	</select>
+  	
+  	<select id="MasterLogPageView" parameterType="pageDto" resultType="log">
+  		<![CDATA[ select * from (select rownum rnum, tt.*from 
+  		(select * from t_wedding_log order by num) tt)
+  		where rnum>=#{startNum} and rnum<=#{endNum}]]>
+  	</select>
+  	
+  	<select id="selectOne_CheckList" resultType="checkDto">
+       select * from t_wedding_checkList where email=#{email}
+    </select>
+    
+    <insert id="insertOne_CheckList" parameterType="checkDto">
+       insert into t_wedding_checkList values(t_wedding_checkList_seq.nextval,#{email},#{listData}) 
+    </insert>
+    
+    <update id="update_CheckList" parameterType="checkDto">
+       update t_wedding_checkList set listData=#{listData} where email=#{email}
+    </update>
+    
+    <select id="masterSaleList" resultType="sDto">
+    	select * from t_wedding_sale
+    </select>
+    
+    <!-- 추가수정////////////////////////////////////////////////////////////////.////////////////////////////////////////////////////////// -->
+     
+     <select id="selectlist_venderSearch01" resultType="vdDto">
+     	select * from t_wedding_vender_dress where bname like '%${bname}%'
+     </select>
+     
+     <select id="selectlist_venderSearch02" resultType="vfDto">
+     	select * from t_wedding_vender_florists where bname like '%${bname}%'
+     </select>
+     
+     <select id="selectlist_venderSearch03" resultType="vsDto">
+     	select * from t_wedding_vender_studio where name like '%${name}%'
+     </select>
+     
+     <select id="selectlist_venderSearch04" resultType="vmDto">
+     	select * from t_wedding_vender_makeup where name like '%${name}%'
+     </select>
+    
+  </mapper>
+  
